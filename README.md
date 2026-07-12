@@ -31,3 +31,7 @@ Roadmap
 Milestone 1
 Milestone 2
 ...
+git status
+git add .
+git commit -m "Meaningful feature name"
+git push
