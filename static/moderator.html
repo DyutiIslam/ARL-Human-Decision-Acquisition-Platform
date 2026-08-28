@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ARL Acquisition Moderator</title>
+<style>
+:root{
+  --bg:#f3f6fa;
+  --panel:#ffffff;
+  --card:#ffffff;
+  --card2:#f8fafc;
+  --ink:#111827;
+  --muted:#5b677a;
+  --blue:#2563eb;
+  --green:#15803d;
+  --red:#dc2626;
+  --gray:#64748b;
+  --border:#d8e1ec;
+  --yellow:#fff7d6;
+  --yellowText:#7a5400;
+  --navy:#0b2a4a;
+}
+*{box-sizing:border-box}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-size:16px;
+}
+header{
+  background:var(--navy);
+  color:white;
+  padding:10px 22px;
+  border-bottom:1px solid #09213a;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+header h1{margin:0;font-size:25px;letter-spacing:.01em;font-weight:900}
+header p{margin:4px 0 0;color:#d7e6f5;font-size:14px}
+main{
+  width:98vw;
+  max-width:none;
+  margin:12px auto;
+  padding:0 14px 22px;
+}
+.dashboard{
+  display:grid;
+  grid-template-columns:280px minmax(760px,1fr) 330px;
+  gap:16px;
+  align-items:start;
+}
+.left-col,.center-col,.right-col{display:flex;flex-direction:column;gap:12px}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 2px 8px rgba(15,23,42,.07);
+}
+.card h2{
+  margin:0 0 10px;
+  font-size:19px;
+  letter-spacing:.01em;
+  color:#111827;
+}
+.small{font-size:14px;color:var(--muted);line-height:1.45}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.top{
+  display:grid;
+  grid-template-columns:1.55fr 1fr 1fr 1fr;
+  gap:12px;
+  margin-bottom:14px;
+}
+.box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  min-height:104px;
+  box-shadow:0 2px 8px rgba(15,23,42,.06);
+}
+.label{font-size:13px;color:#667085;text-transform:uppercase;letter-spacing:.09em;font-weight:800}
+.big{font-size:32px;font-weight:900;margin-top:6px;color:#0f172a;line-height:1.1}
+.clock{font-size:38px;font-weight:900;margin-top:6px;color:#15803d;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+button{
+  border:0;
+  border-radius:10px;
+  padding:10px 13px;
+  margin:3px;
+  font-weight:800;
+  cursor:pointer;
+  background:var(--blue);
+  color:white;
+  font-size:15px;
+  box-shadow:0 1px 2px rgba(0,0,0,.12);
+}
+button.good{background:var(--green)}
+button.danger{background:var(--red)}
+button.secondary{background:#667085}
+button.next{
+  width:100%;
+  font-size:23px;
+  padding:18px;
+  background:#15803d;
+  border:1px solid #166534;
+  box-shadow:0 2px 5px rgba(21,128,61,.22);
+}
+button:disabled{background:#e2e8f0!important;color:#64748b!important;cursor:not-allowed;box-shadow:none}
+input,select,textarea{
+  padding:9px;
+  border:1px solid #cbd5e1;
+  border-radius:9px;
+  margin:4px;
+  font-size:15px;
+  background:#ffffff;
+  color:var(--ink);
+}
+input:disabled{opacity:.75;background:#f1f5f9}
+textarea{width:100%;min-height:58px;resize:vertical}
+hr{border:0;border-top:1px solid var(--border);margin:12px 0}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.row label,label{font-weight:700;color:#344054;font-size:14px}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+.actions button{
+  flex:1 1 120px;
+  margin:0;
+  min-width:115px;
+  border-radius:999px;
+  padding:9px 10px;
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  padding:7px 10px;
+  border-radius:999px;
+  margin:3px;
+  font-weight:800;
+  font-size:13px;
+  border:1px solid transparent;
+}
+.ok{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+.bad{background:#fee2e2;color:#991b1b;border-color:#fecaca}
+.wait{background:#eef2f7;color:#475467;border-color:#d0d5dd}
+.warn{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.live{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+.off{background:#f1f5f9;color:#64748b;border-color:#e2e8f0}
+.notice{
+  background:#fff7d6;
+  border:1px solid #f4d35e;
+  padding:10px 12px;
+  border-radius:10px;
+  color:#7a5400;
+  font-weight:700;
+  font-size:13px;
+}
+.links code{
+  display:block;
+  margin-top:6px;
+  padding:8px;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:8px;
+  font-size:12px;
+  overflow:auto;
+  color:#1d4ed8;
+}
+.marker{
+  font-family:Consolas,monospace;
+  background:#f8fafc;
+  color:#1f2937;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:9px;
+  margin:6px 0;
+  font-size:12px;
+  word-break:break-word;
+}
+.emergency{
+  border:1px solid #fecaca;
+  background:#fff7f7;
+}
+.emergency h2{color:#b91c1c}
+.autosave span{margin-right:8px}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+.compact-row button{margin-top:4px}
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+}
+#preflight,#xdfStatus,#eegStatus,#participantStatus,#responseStatus,#autosave,#gameStatus{line-height:1.65}
+#markers{max-height:360px;overflow:auto;padding-right:2px}
+.center-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.center-grid .wide{grid-column:1/-1}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#e8f0fb;color:#0b2a4a;font-weight:900;margin-right:8px}
+.card h2{display:flex;align-items:center;gap:0}
+.workflow-card,.response-card{min-height:120px}
+#links{grid-template-columns:1fr}
+#sessionHistory{line-height:1.65}
+.map-table{width:100%;border-collapse:collapse;font-size:12px}
+.map-table th,.map-table td{border:1px solid var(--border);padding:4px;text-align:left}
+.map-table input{width:100%;padding:6px;font-size:12px}
+.operator-guide{border:2px solid #93c5fd;background:linear-gradient(135deg,#eff6ff,#ffffff);padding:16px 18px;margin-bottom:14px}.operator-guide h2{margin-bottom:8px}.guide-head{display:grid;grid-template-columns:170px 1fr auto;gap:14px;align-items:center}.guide-step{font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#1d4ed8}.guide-next{font-size:22px;font-weight:900;color:#0f172a}.guide-progress{font-size:14px;font-weight:800;color:#475569}.guide-list{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:8px;margin-top:14px}.guide-item{display:flex;align-items:flex-start;gap:8px;padding:10px;border:1px solid #dbeafe;border-radius:10px;background:#fff;font-size:13px;line-height:1.35}.guide-item.done{background:#ecfdf3;border-color:#bbf7d0}.guide-item.current{background:#fff7d6;border-color:#f4d35e}.guide-icon{font-weight:900;min-width:18px}.guide-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.guide-actions label{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#fff;border:1px solid var(--border);border-radius:9px;font-size:13px}.dev-note{font-size:12px;color:#64748b;margin-top:8px}.test-tools{border-style:dashed;background:#fbfdff}.test-tools h2{color:#475569}
+@media(max-width:1350px){
+  .dashboard{grid-template-columns:1fr 1fr}
+  .right-col{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,1fr)}
+  .top{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:1100px){.guide-list{grid-template-columns:repeat(2,minmax(180px,1fr))}.guide-head{grid-template-columns:1fr}}
+@media(max-width:900px){
+  main{width:98vw;padding:0 6px}
+  .dashboard,.right-col,.top,.center-grid{grid-template-columns:1fr}
+  .clock{font-size:30px}
+}
+</style>
+</head>
+<body>
+<header><h1>ARL Human Decision-Making Study</h1><p>Moderator Console · V11 Clean One-Station Hardware Baseline · LSL markers</p></header>
+<main>
+<section class="top">
+  <div class="box"><div class="label">Current Phase</div><div class="big" id="phaseLabel">Loading...</div><div class="small">Session <b id="curSession">S001</b> · Game <b id="curGame">1</b> · Round <b id="curRound">1</b> · Active speaker <b id="curSpeaker">None</b></div></div>
+  <div class="box"><div class="label">Phase Timer</div><div class="clock" id="timer">--:--</div><div class="small">Informational only. No auto-advance.</div></div>
+  <div class="box"><div class="label">Game Timer</div><div class="clock" id="gameTimer">--:--</div><div class="small">Current game elapsed time.</div></div>
+  <div class="box"><div class="label">Session Timer</div><div class="clock" id="sessionTimer">--:--</div><div class="small">Total session elapsed time.</div></div>
+</section>
+
+<section class="card operator-guide" id="operatorGuide">
+  <div class="guide-head">
+    <div><div class="guide-step" id="guideStepLabel">Step 1 of 8</div><div class="guide-progress" id="guideProgress">0/8 complete</div></div>
+    <div><div class="label">Recommended next action</div><div class="guide-next" id="guideNextAction">Create or activate a session</div></div>
+    <button class="good" onclick="document.getElementById('nextBtn').scrollIntoView({behavior:'smooth',block:'center'})">Go to Suggested Action</button>
+  </div>
+  <div class="guide-list" id="guideChecklist"></div>
+  <div class="guide-actions">
+    <label><input type="checkbox" id="manualLabRecorder"> LabRecorder is open and recording</label>
+    <label><input type="checkbox" id="manualAudioCheck"> Camera/microphone checked</label>
+    <label><input type="checkbox" id="manualStreamsCheck"> Selected streams verified</label>
+    <button class="secondary" onclick="resetOperatorChecks()">Reset manual checks</button>
+  </div>
+  <div class="dev-note">Development mode: this checklist guides the sequence but does not lock any controls.</div>
+</section>
+
+<div class="dashboard">
+  <aside class="left-col">
+    <section class="card"><h2><span class="section-num">1</span>Session Setup and Game Control</h2><div id="Rolling">Checking...</div><hr><div class="row"><label>Session ID<br><input id="sessionId" value="S001"></label><label>Game<br><input id="gameNumber" type="number" min="1" max="5" value="1" style="width:80px"></label><label>Round<br><input id="roundNumber" type="number" min="1" max="4" value="1" style="width:80px" disabled></label><label>Spy Player<br><select id="spyPlayer"><option value="">Balanced Random</option><option value="1">P1</option><option value="2">P2</option><option value="3">P3</option><option value="4">P4</option><option value="5">P5</option></select></label></div><div class="row compact-row"><button class="secondary" onclick="startNewSession()">Start New Session / Clear Active State</button><button onclick="setPhase('SESSION_START')" id="startSessionBtn">Start Session</button><button class="good" onclick="createAssignment()" id="assignBtn">Create Current Game</button><button class="secondary" onclick="nextGame()" id="nextGameBtn">Start Next Game</button><button class="danger" onclick="resetGame()">Reset Current Game</button><button class="danger" onclick="confirmEndSession()">End Session + Save</button><button class="secondary" onclick="saveSession()">Save Session Files</button></div><div id="gameStatus" class="small"></div></section>
+
+    <section class="card"><h2><span class="section-num">1A</span>One-Station Setup: Modalities and Device Map</h2><p class="small"><b>V11 one-station mode:</b> start with P1 + SpyGameMarkers only, then add ShimmerECG in LabRecorder. Full 5-participant and production hardware checks are guidance only for now.</p><div class="row"><label>Experiment<br><select id="experimentName"><option value="spy_game">Spy Game</option></select></label><label>Participants<br><select id="participantCount"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label></div><div class="row" id="modalityChecks"><label><input type="checkbox" value="EEG"> EEG</label><label><input type="checkbox" value="ECG" checked> ECG</label><label><input type="checkbox" value="GSR"> GSR</label><label><input type="checkbox" value="EMG"> EMG</label><label><input type="checkbox" value="Audio"> Audio</label><label><input type="checkbox" value="Video"> Video</label></div><div id="deviceMap" class="marker">Device map loading...</div><div class="row compact-row"><button class="good" onclick="saveSessionConfig(false)">Save Setup</button><button class="secondary" onclick="saveSessionConfig(true)">Save + Lock Setup</button><button class="danger" onclick="unlockSessionConfig()">Unlock Setup</button></div><div id="configStatus" class="small"></div></section>
+    <section class="card emergency"><h2><span class="section-num">E</span>Emergency Controls</h2><p class="small">Use only for sensor failure, participant withdrawal, software issue, or moderator decision. Existing data is preserved and all current files are saved.</p><div class="row"><button class="danger" onclick="forceEndGame()">Force End Current Game + Save</button><button class="danger" onclick="forceEndSession()">Force End Session + Save</button></div></section>
+  </aside>
+
+  <section class="center-col">
+    <section class="card"><h2><span class="section-num">2</span>Suggested Next Action</h2><button id="nextBtn" class="next" onclick="doNext()">Loading...</button><p class="small" id="nextHint">Use this as the recommended path. All controls remain available for development testing.</p></section>
+    <section class="card workflow-card"><h2><span class="section-num">3</span>Experiment Phase Controls</h2><div class="notice">Recommended order: Word → P1 → P2 → P3 → P4 → P5 → Vote → Confidence → Reasoning → End Round. Controls remain unlocked for testing.</div><br><div class="actions" id="phaseButtons"></div></section>
+    <section class="card"><h2><span class="section-num">4</span>Participant Screens</h2><div id="participantStatus">Waiting for participant screens...</div></section>
+    <section class="card response-card"><h2><span class="section-num">5</span>Response Completion</h2><div id="responseStatus">No response phase active.</div><div id="completeness" class="small"></div></section>
+    <div class="center-grid">
+    <section class="card"><h2><span class="section-num">8</span>Data Save Verification</h2><div id="autosave" class="autosave">Not checked.</div></section>
+    <section class="card"><h2><span class="section-num">9</span>Session History</h2><div id="sessionHistory">No saved sessions yet.</div></section>
+    <section class="card wide"><h2><span class="section-num">10</span>Recent Markers</h2><div id="markers">No markers yet.</div></section>
+    <section class="card links"><h2><span class="section-num">11</span>Participant Workstation Shortcuts</h2><p class="small">Use these once to create desktop shortcuts on fixed participant laptops. Observer screen is read-only.</p><div class="grid" id="links"></div></section>
+
+    <section class="card wide"><h2><span class="section-num">12</span>Session Metadata</h2><div class="grid"><label>Group ID<br><input id="groupId" placeholder="G001"></label><label>Operator<br><input id="operator" placeholder="Researcher name"></label><label>Experiment Version<br><input id="expVersion" value="v1.0-acquisition"></label><label>Word Set Version<br><input id="wordVersion" value="word_pairs.csv"></label><label>P1 Code<br><input id="p1code"></label><label>P2 Code<br><input id="p2code"></label><label>P3 Code<br><input id="p3code"></label><label>P4 Code<br><input id="p4code"></label><label>P5 Code<br><input id="p5code"></label></div><div class="grid"><label>EEG Notes<textarea id="eegNotes"></textarea></label><label>ECG Notes<textarea id="ecgNotes"></textarea></label><label>GSR Notes<textarea id="gsrNotes"></textarea></label><label>EMG Notes<textarea id="emgNotes"></textarea></label><label>Audio Notes<textarea id="audioNotes"></textarea></label><label>Video Notes<textarea id="videoNotes"></textarea></label></div><label>Operator Notes<textarea id="operatorNotes"></textarea></label><br><button class="good" onclick="saveMetadata()">Save Metadata / QC / Notes</button></section>
+
+    </div>
+  </section>
+
+  <aside class="right-col">
+    <section class="card test-tools"><h2><span class="section-num">6</span>Recording Readiness and Testing Tools</h2><div id="xdfStatus">Checking...</div><div class="row"><button class="good" onclick="initLSL()">Initialize LSL Marker Stream</button><button class="secondary" onclick="testLSLMarker()">Send Test LSL Marker</button></div><p class="small">One-station order: 1) initialize <b>SpyGameMarkers</b>, 2) verify it in LabRecorder, 3) send test marker, 4) start SensorChrono Shimmer bridge, 5) verify <b>ShimmerECG</b>, <b>ShimmerMarkers</b>, and <b>ShimmerDiagnostics_ECG</b> in LabRecorder.</p><hr><h3>Phase 2 EEG LSL Validation</h3><div id="eegStatus">Checking EEG streams...</div><div class="row"><button class="good" onclick="scanEEG(true)">Scan + Log EEG Preflight</button><button class="secondary" onclick="scanEEG(false)">Scan EEG Only</button></div><p class="small">Use this after EmotivPRO LSL streaming is enabled. It does not record EEG; it verifies stream visibility, channel count, nominal sample rate, channel labels, and sample availability.</p><div class="row"><label><input type="checkbox" id="qcLab"> LabRecorder recording confirmed</label><label><input type="checkbox" id="qcEEG"> EEG</label><label><input type="checkbox" id="qcECG"> ECG</label><label><input type="checkbox" id="qcGSR"> GSR</label><label><input type="checkbox" id="qcEMG"> EMG</label><label><input type="checkbox" id="qcAudio"> Audio</label><label><input type="checkbox" id="qcVideo"> Video</label></div><label>Session Notes<textarea id="sessionNotes" placeholder="Record sensor issues, interruptions, participant questions, or protocol deviations."></textarea></label></section>
+    <section class="card"><h2><span class="section-num">6A</span>Browser Media Status</h2><div id="mediaManagerStatus">Checking P1 camera/microphone...</div><p class="small">Current test mode: P1 uses a real browser camera + microphone. P2-P5 are simulated until separate participant laptops are available. Media failure does not block the Spy Game.</p></section>
+    <section class="card"><h2><span class="section-num">7</span>Hardware / Recording Event Log</h2><div class="row"><label>Device<br><select id="hwDevice"><option>EEG</option><option>ECG</option><option>GSR</option><option>EMG</option><option>Audio</option><option>Video</option><option>LabRecorder</option></select></label><label>Participant<br><select id="hwPlayer"><option value="">General</option><option value="1">P1</option><option value="2">P2</option><option value="3">P3</option><option value="4">P4</option><option value="5">P5</option></select></label><label>Status<br><select id="hwStatus"><option value="disconnected">Disconnected</option><option value="connected">Connected</option><option value="issue">Issue</option><option value="resolved">Resolved</option></select></label></div><textarea id="hwNote" placeholder="Example: EEG P2 disconnected during Round 3; reconnected after 20 seconds."></textarea><br><button class="danger" onclick="logHardwareEvent()">Log Hardware Event</button></section>
+  </aside>
+</div>
+</main>
+
+<script>
+let state=null;let sessionConfig=null;let configSessionId='';let phaseStartedAt=Date.now();let lastPhaseKey='';let lastParticipantStatus={};let lastXdfStatus={};let lastMediaStatus={};
+const phases=['WORD_PHASE','SPEAKER_P1','SPEAKER_P2','SPEAKER_P3','SPEAKER_P4','SPEAKER_P5','VOTE_PHASE','CONFIDENCE_PHASE','REASONING_PHASE','ROUND_END','GAME_END'];
+const labels={WORD_PHASE:'Word Phase',SPEAKER_P1:'Speaker P1',SPEAKER_P2:'Speaker P2',SPEAKER_P3:'Speaker P3',SPEAKER_P4:'Speaker P4',SPEAKER_P5:'Speaker P5',VOTE_PHASE:'Start Vote',CONFIDENCE_PHASE:'Start Confidence',REASONING_PHASE:'Start Reasoning',ROUND_END:'End Round',GAME_END:'End Game'};
+async function api(path,options={}){const r=await fetch(path,{headers:{'Content-Type':'application/json'},...options});if(!r.ok){throw new Error(await r.text())}return await r.json()}
+
+const operatorManualKeys=['manualLabRecorder','manualAudioCheck','manualStreamsCheck'];
+function loadOperatorChecks(){operatorManualKeys.forEach(id=>{const el=document.getElementById(id);if(el){el.checked=localStorage.getItem('arl_'+id)==='1';el.addEventListener('change',()=>{localStorage.setItem('arl_'+id,el.checked?'1':'0');updateOperatorWorkflow();});}})}
+function resetOperatorChecks(){operatorManualKeys.forEach(id=>{const el=document.getElementById(id);if(el){el.checked=false;localStorage.removeItem('arl_'+id);}});updateOperatorWorkflow()}
+function countConnectedParticipants(){return Object.values(lastParticipantStatus||{}).filter(x=>x.connected).length}
+function mediaReadyForP1(){const s=(lastMediaStatus||{})['1'];return !!s&&['ready','recording','saved','stopped'].includes(s.status)}
+function updateOperatorWorkflow(){
+  if(!state)return;
+  const manualLab=!!document.getElementById('manualLabRecorder')?.checked;
+  const manualAudio=!!document.getElementById('manualAudioCheck')?.checked;
+  const manualStreams=!!document.getElementById('manualStreamsCheck')?.checked;
+  const participantsNeeded=Math.max(1,Number(sessionConfig?.participant_count||1));
+  const connected=countConnectedParticipants();
+  const sessionActivated=!!state.session_id;
+  const setupSaved=!!sessionConfig&&(sessionConfig.enabled_modalities||[]).length>0;
+  const participantsReady=connected>=participantsNeeded;
+  const mediaNeeded=(sessionConfig?.enabled_modalities||[]).some(x=>['Audio','Video'].includes(x));
+  const mediaReady=!mediaNeeded||mediaReadyForP1()||manualAudio;
+  const lslReady=!!lastXdfStatus.lsl_outlet_created;
+  const streamsReady=manualStreams;
+  const sessionStarted=!['WAITING','SESSION_END'].includes(state.phase);
+  const gameCreated=state.phase!=='WAITING'&&state.phase!=='SESSION_START'&&state.phase!=='GAME_READY';
+  const sessionEnded=state.phase==='SESSION_END';
+  const steps=[
+    {label:'Activate session and confirm Session ID',done:sessionActivated,action:'Create or activate a session'},
+    {label:'Select modalities and save setup',done:setupSaved,action:'Select modalities and click Save Setup'},
+    {label:`Open participant stations (${connected}/${participantsNeeded} connected)`,done:participantsReady,action:'Open required participant pages'},
+    {label:'Verify P1 camera and microphone when selected',done:mediaReady,action:'Set up and test P1 camera/microphone'},
+    {label:'Initialize SpyGameMarkers and verify selected streams',done:lslReady&&streamsReady,action:!lslReady?'Initialize LSL and send a test marker':'Verify streams in LabRecorder and check the box'},
+    {label:'Start LabRecorder recording',done:manualLab,action:'Start LabRecorder and check the recording box'},
+    {label:'Start session, create game, and run phases',done:sessionStarted&&gameCreated,action:!sessionStarted?'Start Session':'Create Current Game / continue phases'},
+    {label:'End session, save files, and convert XDF',done:sessionEnded,action:'End Session, stop LabRecorder, then convert XDF'}
+  ];
+  const idx=Math.max(0,steps.findIndex(x=>!x.done));
+  const complete=steps.filter(x=>x.done).length;
+  guideStepLabel.textContent=complete===steps.length?'Workflow complete':`Step ${idx+1} of ${steps.length}`;
+  guideProgress.textContent=`${complete}/${steps.length} complete`;
+  guideNextAction.textContent=complete===steps.length?'Verify saved outputs':steps[idx].action;
+  guideChecklist.innerHTML=steps.map((x,i)=>`<div class="guide-item ${x.done?'done':(!x.done&&i===idx?'current':'')}"><span class="guide-icon">${x.done?'✓':i===idx?'▶':'○'}</span><span>${x.label}</span></div>`).join('');
+}
+
+let moderatorAudioCtx=null;
+function playModeratorBoundaryBeep(duration=.85){
+  moderatorAudioCtx=moderatorAudioCtx||new(window.AudioContext||window.webkitAudioContext)();
+  moderatorAudioCtx.resume();
+  const osc=moderatorAudioCtx.createOscillator(),gain=moderatorAudioCtx.createGain();
+  osc.frequency.value=1200;osc.type='sine';gain.gain.value=.38;osc.connect(gain);gain.connect(moderatorAudioCtx.destination);
+  const t=moderatorAudioCtx.currentTime;osc.start(t);gain.gain.setValueAtTime(.38,t);gain.gain.setValueAtTime(.38,t+duration-.08);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);osc.stop(t+duration+.02);
+}
+
+function currentSession(){return document.getElementById('sessionId').value||'S001'}
+function fmt(sec){if(sec==null)return'--:--';sec=Math.max(0,Math.floor(sec));return `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`}
+function phaseRemain(){const d=state?.phase_duration_sec;if(d==null)return null;return Math.max(0,d-Math.floor((Date.now()-phaseStartedAt)/1000))}
+function enabledModalities(){return Array.from(document.querySelectorAll('#modalityChecks input:checked')).map(x=>x.value)}
+function deviceMapFromUI(){const map={};document.querySelectorAll('[data-map-row]').forEach(row=>{const pid=row.dataset.mapRow;map[pid]={};row.querySelectorAll('input[data-modality]').forEach(inp=>{map[pid][inp.dataset.modality]=inp.value.trim()})});return map}
+function renderDeviceMap(){const count=parseInt(participantCount.value||'5');const mods=enabledModalities();let html='<table class="map-table"><thead><tr><th>Participant</th>'+mods.map(m=>`<th>${m} Device/Stream ID</th>`).join('')+'</tr></thead><tbody>';for(let i=1;i<=count;i++){const pid=`P${String(i).padStart(2,'0')}`;const existing=sessionConfig?.device_map?.[pid]||{};html+=`<tr data-map-row="${pid}"><td><b>${pid}</b></td>`+mods.map(m=>`<td><input data-modality="${m}" value="${existing[m]||''}" placeholder="${m}_${pid}"></td>`).join('')+'</tr>'}html+='</tbody></table>';if(!mods.length)html='<span class="pill bad">Select at least one modality.</span>';deviceMap.innerHTML=html}
+async function refreshSessionConfig(){const cfg=await api(`/api/session_config?session_id=${encodeURIComponent(currentSession())}`);sessionConfig=cfg;configSessionId=currentSession();experimentName.value=cfg.experiment_name||'spy_game';participantCount.value=String(cfg.participant_count||5);document.querySelectorAll('#modalityChecks input').forEach(x=>{x.checked=(cfg.enabled_modalities||[]).includes(x.value)});renderDeviceMap();configStatus.innerHTML=`<span class="pill ${cfg.setup_locked?'ok':'warn'}">Setup ${cfg.setup_locked?'LOCKED':'unlocked'}</span><span class="pill wait">Modalities: ${(cfg.enabled_modalities||[]).join(', ')||'none'}</span>`;document.querySelectorAll('#modalityChecks input, #participantCount, #experimentName').forEach(x=>x.disabled=cfg.setup_locked&&state?.phase!=='WAITING'&&state?.phase!=='SESSION_END')}
+async function saveSessionConfig(lock=false){const payload={session_id:currentSession(),experiment_name:experimentName.value,participant_count:parseInt(participantCount.value||'5'),enabled_modalities:enabledModalities(),device_map:deviceMapFromUI(),output_root:'',setup_locked:lock};if(!payload.enabled_modalities.length){alert('Select at least one modality.');return}const out=await api('/api/session_config',{method:'POST',body:JSON.stringify(payload)});sessionConfig=out.config;await refreshSessionConfig();await refreshPreflight();alert(lock?'Setup saved and locked.':'Setup saved. Start Session is allowed in relaxed one-station mode even if hardware is not connected yet.')}
+async function unlockSessionConfig(){if(!confirm('Unlock setup? Only do this before recording, or after ending a session.'))return;const out=await api('/api/session_config/lock',{method:'POST',body:JSON.stringify({session_id:currentSession(),lock:false})});sessionConfig=out.config;await refreshSessionConfig();await refreshPreflight()}
+document.addEventListener('change',e=>{if(e.target.closest('#modalityChecks')||e.target.id==='participantCount'){renderDeviceMap()}});
+async function setPhase(phase,extra={}){const payload={session_id:currentSession(),phase,game_number:parseInt(gameNumber.value||'1'),round_number:parseInt(roundNumber.value||'1'),...extra};try{if(phase.startsWith('SPEAKER_P')){playModeratorBoundaryBeep(.85);await new Promise(r=>setTimeout(r,850));}const out=await api('/api/control/set_phase',{method:'POST',body:JSON.stringify(payload)});if(out.saved_files){alert('Session ended and files saved.')}await refreshAll()}catch(e){alert('Action blocked: '+e.message)}}
+async function doNext(){if(!state?.next_action)return;const n=state.next_action;if(n.enabled===false){alert(n.label);return}if(n.kind==='create_game'){await createAssignment();return}if(n.kind==='next_game'){await nextGame();return}if(n.kind==='phase'){if(n.round_number)roundNumber.value=n.round_number;await setPhase(n.phase,{round_number:n.round_number||undefined});}}
+async function createAssignment(){const spy=spyPlayer.value;try{await api('/api/control/start_game',{method:'POST',body:JSON.stringify({session_id:currentSession(),game_number:parseInt(gameNumber.value||'1'),spy_player:spy?parseInt(spy):null})});await refreshAll();alert('Current game created with randomized word pair and spy assignment.')}catch(e){alert('Action blocked: '+e.message)}}
+async function nextGame(){if(!confirm('Start the next game with a new randomized word pair and randomized spy?'))return;try{await api(`/api/control/next_game?session_id=${encodeURIComponent(currentSession())}`,{method:'POST'});await refreshAll()}catch(e){alert('Action blocked: '+e.message)}}
+async function resetGame(){if(!confirm('Reset the current game to Round 1? Previous logs will be kept and a GAME_RESET marker will be added.'))return;await api(`/api/control/reset_game?session_id=${encodeURIComponent(currentSession())}`,{method:'POST'});await refreshAll()}
+async function startNewSession(){const sid=prompt('Enter new or existing Session ID to activate:', currentSession()); if(!sid)return; if(!confirm(`Activate ${sid} as a fresh session state? Previous saved session folders will not be deleted.`))return; await api('/api/control/new_session',{method:'POST',body:JSON.stringify({session_id:sid})}); sessionId.value=sid; sessionConfig=null; configSessionId=''; await refreshAll(); alert(`Active session set to ${sid}.`)}
+function forceReason(){const reason=prompt('Reason for force end (sensor failure / participant withdrawal / software issue / moderator decision / other):','moderator decision'); if(!reason)return null; const note=prompt('Optional note:', '')||''; return {reason,note}}
+async function forceEndGame(){const r=forceReason(); if(!r)return; if(!confirm('This will terminate the current game and save all progress. Existing data will not be deleted. Continue?'))return; const out=await api('/api/control/force_end_game',{method:'POST',body:JSON.stringify({session_id:currentSession(),...r})}); alert('Force End Game complete. Progress saved.\nSaved files:\n'+Object.values(out.saved_files).join('\n')); await refreshAll()}
+async function forceEndSession(){const r=forceReason(); if(!r)return; if(!confirm('This will terminate the current session and save all progress. Existing data will not be deleted. Continue?'))return; const out=await api('/api/control/force_end_session',{method:'POST',body:JSON.stringify({session_id:currentSession(),...r})}); alert('Force End Session complete. Progress saved.\nSaved files:\n'+Object.values(out.saved_files).join('\n')); await refreshAll()}
+function confirmEndSession(){if(confirm('End session and autosave all behavioral/event files?'))setPhase('SESSION_END')}
+async function saveSession(){const out=await api(`/api/save_session?session_id=${encodeURIComponent(currentSession())}`,{method:'POST'});alert('Saved/verified files:\n'+Object.values(out.saved_files).join('\n'));await refreshAutosave();await refreshCompleteness()}
+async function saveMetadata(){await api('/api/metadata',{method:'POST',body:JSON.stringify({session_id:currentSession(),group_id:groupId.value,operator:operator.value,experiment_version:expVersion.value,word_set_version:wordVersion.value,participant_p1:p1code.value,participant_p2:p2code.value,participant_p3:p3code.value,participant_p4:p4code.value,participant_p5:p5code.value,eeg_notes:eegNotes.value,ecg_notes:ecgNotes.value,gsr_notes:gsrNotes.value,emg_notes:emgNotes.value,audio_notes:audioNotes.value,video_notes:videoNotes.value,operator_notes:operatorNotes.value,qc_labrecorder:qcLab.checked,qc_eeg:qcEEG.checked,qc_ecg:qcECG.checked,qc_gsr:qcGSR.checked,qc_emg:qcEMG.checked,qc_audio:qcAudio.checked,qc_video:qcVideo.checked,session_notes:sessionNotes.value})});alert('Metadata/QC/notes saved.');await refreshPreflight();await refreshXDF()}
+async function logHardwareEvent(){await api('/api/control/hardware_event',{method:'POST',body:JSON.stringify({session_id:currentSession(),device:hwDevice.value,player_id:hwPlayer.value?parseInt(hwPlayer.value):null,status:hwStatus.value,note:hwNote.value})});hwNote.value='';await refreshMarkers();alert('Hardware event logged as marker.')}
+function renderButtons(){phaseButtons.innerHTML=phases.map(p=>`<button onclick="setPhase('${p}')">${labels[p]||p}</button>`).join('')}
+async function refreshState(){state=await api('/api/state');curSession.textContent=state.session_id;curGame.textContent=state.game_number;curRound.textContent=state.round_number;curSpeaker.textContent=state.active_speaker?`P${state.active_speaker}`:'None';phaseLabel.textContent=state.phase_label;sessionId.value=state.session_id;gameNumber.value=state.game_number;roundNumber.value=state.round_number;nextBtn.textContent=state.next_action?.label||'No next action';nextBtn.disabled=false;assignBtn.disabled=false;nextGameBtn.disabled=false;startSessionBtn.disabled=false;const key=`${state.phase}-${state.game_number}-${state.round_number}-${state.active_speaker||''}`;if(key!==lastPhaseKey){phaseStartedAt=new Date(state.updated_at+'Z').getTime()||Date.now();lastPhaseKey=key}renderButtons()}
+async function refreshParticipants(){const out=await api(`/api/status/participants?session_id=${encodeURIComponent(currentSession())}`);lastParticipantStatus=out.status||{};participantStatus.innerHTML=Object.entries(out.status).map(([p,s])=>`<span class="pill ${s.connected?'live':'off'}">P${p}: ${s.connected?'Connected':'Disconnected'} ${s.age_sec!=null?`(${s.age_sec}s)`:''} ${s.current_phase_seen?`· ${s.current_phase_seen}`:''}</span>`).join('')}
+async function refreshResponses(){if(!state)return;const out=await api(`/api/status/responses?session_id=${encodeURIComponent(state.session_id)}&game_number=${state.game_number}&round_number=${state.round_number}`);const phase=state.phase.includes('VOTE')?'vote':state.phase.includes('CONFIDENCE')?'confidence':state.phase.includes('REASONING')?'reasoning':null;if(!phase){responseStatus.innerHTML='<span class="pill wait">No response phase active</span>';return}responseStatus.innerHTML=Object.entries(out.status).map(([p,s])=>`<span class="pill ${s[phase]?'ok':'bad'}">P${p} ${s[phase]?'✓':'⏳'}</span>`).join('')}
+async function refreshTimers(){const t=await api(`/api/status/timers?session_id=${encodeURIComponent(currentSession())}`);gameTimer.textContent=fmt(t.game_elapsed_sec);sessionTimer.textContent=fmt(t.session_elapsed_sec)}
+async function refreshGames(){const out=await api(`/api/status/games?session_id=${encodeURIComponent(currentSession())}`);gameStatus.innerHTML=Object.entries(out.games).map(([g,s])=>`<span class="pill ${s==='complete'?'ok':s==='active'?'warn':s==='assigned'?'wait':'off'}">Game ${g}: ${s}</span>`).join('')}
+async function refreshPreflight(){const out=await api(`/api/status/preflight?session_id=${encodeURIComponent(currentSession())}`);const minimumKeys=['word_pairs_available','lsl_marker_stream'];const header=`<div><span class="pill ${out.ready_minimum?'ok':'bad'}">One-station start ${out.ready_minimum?'allowed':'minimum not ready'}</span><span class="pill wait">Strict production checklist: ${out.ready_strict?'ready':'later'}</span><span class="pill wait">${(out.config?.enabled_modalities||[]).join(', ')||'no modalities'}</span></div>`;const checklist=`<div class="small"><b>Operator checklist:</b> New Session → Initialize LSL → Send Test Marker → LabRecorder sees SpyGameMarkers → optional SensorChrono bridge on COM port → LabRecorder sees ShimmerECG streams → record short XDF.</div>`;preflight.innerHTML=header+checklist+Object.entries(out.checks).map(([k,v])=>`<span class="pill ${v?'ok':(minimumKeys.includes(k)?'bad':'wait')}">${k.replaceAll('_',' ')} ${v?'✓':(minimumKeys.includes(k)?'missing':'later')}</span>`).join('')}
+async function refreshXDF(){const out=await api(`/api/status/xdf?session_id=${encodeURIComponent(currentSession())}`);lastXdfStatus=out||{};xdfStatus.innerHTML=`<span class="pill ${out.lsl_available?'ok':'bad'}">LSL import ${out.lsl_available?'✓':'missing'}</span><span class="pill ${out.lsl_outlet_created?'ok':'warn'}">Marker outlet ${out.lsl_outlet_created?'created':'not initialized'}</span><span class="pill wait">Stream: ${out.lsl_stream_name||'SpyGameMarkers'}</span><span class="pill ${out.labrecorder_checked?'ok':'bad'}">LabRecorder QC ${out.labrecorder_checked?'✓':'missing'}</span><span class="pill ${out.xdf_ready?'ok':'bad'}">XDF readiness ${out.xdf_ready?'✓':'not ready'}</span><div class="small">LSL clock: ${out.lsl_local_clock?out.lsl_local_clock.toFixed(4):'not available'} · Source ID: ${out.lsl_source_id||''}</div><div class="small">${out.note}</div>${out.lsl_last_error?`<div class="pill bad">LSL error: ${out.lsl_last_error}</div>`:''}`}
+async function initLSL(){const out=await api('/api/lsl/init',{method:'POST'});alert(out.ok?'LSL marker stream initialized. Open LabRecorder and look for SpyGameMarkers.':'LSL marker stream could not initialize. Check pylsl/liblsl.');await refreshXDF();}
+async function testLSLMarker(){const out=await api(`/api/lsl/test_marker?session_id=${encodeURIComponent(currentSession())}`,{method:'POST'});alert(out.ok?`Test marker sent.\nMarker: ${out.marker}\nLSL time: ${out.lsl_time}`:'Test marker logged locally but was not sent to LSL. Check LSL status.');await refreshMarkers();await refreshXDF();}
+function renderEEG(out){if(!out.available){eegStatus.innerHTML=`<span class="pill bad">EEG LSL unavailable</span><div class="small">${out.error||''}</div>`;return}const s=out.summary||{};let html=`<span class="pill ${s.insight_like_streams>=1?'ok':'bad'}">Insight-like streams: ${s.insight_like_streams||0}</span><span class="pill ${s.valid_streams>=1?'ok':'warn'}">Valid/sample streams: ${s.valid_streams||0}</span><span class="pill wait">EEG candidates: ${s.total_eeg_candidates||0}</span><div class="small">LSL clock: ${out.lsl_clock?out.lsl_clock.toFixed(4):'not available'}</div>`;(out.streams||[]).forEach(x=>{html+=`<div class="marker"><b>${x.name||'Unnamed EEG Stream'}</b> · ${x.validation_status} · ${x.channel_count} ch · ${x.nominal_srate} Hz · labels: ${(x.channel_labels||[]).join(', ')||'not exposed'} ${x.sample_available?'· sample ✓':'· no sample'}${(x.warnings||[]).length?`<br><span class="pill warn">${x.warnings.join(' | ')}</span>`:''}</div>`});if(out.error){html+=`<div class="pill bad">${out.error}</div>`}eegStatus.innerHTML=html}
+async function refreshEEG(){const out=await api(`/api/status/eeg?session_id=${encodeURIComponent(currentSession())}`);renderEEG(out)}
+async function refreshMediaStatus(){const out=await api(`/api/media/status?session_id=${encodeURIComponent(currentSession())}`);lastMediaStatus=out.status||{};mediaManagerStatus.innerHTML=Object.entries(out.status||{}).map(([p,s])=>{const cls=s.status==='recording'?'live':['ready','saved','stopped'].includes(s.status)?'ok':s.status==='simulated'?'wait':'off';return `<div class="marker"><b>P${p}</b> · <span class="pill ${cls}">${s.status}</span> · Camera: ${s.camera?'real':'simulated'} · Mic: ${s.microphone?'real':'simulated'}${s.segment?` · segment ${s.segment}`:''}${s.last_file?`<br><span class="small">${s.last_file}</span>`:''}</div>`}).join('')}
+
+async function scanEEG(save){const path=save?`/api/eeg/log_preflight?session_id=${encodeURIComponent(currentSession())}`:`/api/status/eeg?session_id=${encodeURIComponent(currentSession())}`;const out=await api(path,{method:save?'POST':'GET'});renderEEG(out);if(save){await refreshMarkers();await refreshAutosave();alert('EEG preflight snapshot logged. Check eeg_streams.csv after saving/session end.')}}
+async function refreshAutosave(){const out=await api(`/api/status/autosave?session_id=${encodeURIComponent(currentSession())}`);autosave.innerHTML=`<div class="small">Folder: ${out.folder}</div>`+Object.entries(out.files).map(([f,ok])=>`<span class="pill ${ok?'ok':'bad'}">${f} ${ok?'✓':'missing'}</span>`).join('')}
+async function refreshCompleteness(){const out=await api(`/api/status/completeness?session_id=${encodeURIComponent(currentSession())}`);completeness.innerHTML=out.ok?'<span class="pill ok">No integrity issues detected</span>':out.issues.slice(0,8).map(x=>`<div class="pill bad">${x}</div>`).join('')}
+async function refreshMarkers(){const out=await api(`/api/status/markers?session_id=${encodeURIComponent(currentSession())}&limit=12`);markers.innerHTML=out.markers.length?out.markers.reverse().map(m=>`<div class="marker">${m.server_time_utc} · ${m.marker} ${m.value?('· '+m.value):''}</div>`).join(''):'No markers yet.'}
+async function refreshSessions(){const out=await api('/api/status/sessions');sessionHistory.innerHTML=out.sessions.length?out.sessions.map(s=>`<span class="pill wait">${s}</span>`).join(''):'No saved sessions yet.'}
+function updatePhaseTimer(){const r=phaseRemain();timer.textContent=fmt(r);timer.style.color=(r===0?'#c92a2a':r<=3?'#b7791f':'#198754')}
+function renderLinks(){const host=location.host;links.innerHTML=[1,2,3,4,5].map(i=>`<div><b>Participant P${i}</b><code>http://${host}/p${i}</code></div>`).join('')+`<div><b>Observer</b><code>http://${host}/observer</code></div>`}
+async function refreshAll(){await refreshState();if(!sessionConfig||configSessionId!==currentSession()){await refreshSessionConfig()}await Promise.all([refreshParticipants(),refreshResponses(),refreshTimers(),refreshGames(),refreshPreflight(),refreshXDF(),refreshAutosave(),refreshCompleteness(),refreshMarkers(),refreshSessions(),refreshEEG(),refreshMediaStatus()]);renderLinks();updateOperatorWorkflow()}
+loadOperatorChecks();setInterval(refreshAll,1500);setInterval(updatePhaseTimer,250);refreshAll();
+</script>
+</body>
+</html>

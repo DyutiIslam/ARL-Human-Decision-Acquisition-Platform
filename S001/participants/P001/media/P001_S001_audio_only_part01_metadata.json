@@ -1,0 +1,14 @@
+{
+  "session_id": "S001",
+  "participant_id": "P001",
+  "segment": 1,
+  "filename": "P001_S001_audio_only_part01.webm",
+  "media_kind": "audio_only",
+  "mime_type": "audio/webm;codecs=opus",
+  "camera_label": "PC-LM1E (0c45:636d)",
+  "microphone_label": "Microphone Array on SoundWire Device (3- Cirrus Logic XU)",
+  "size_bytes": 4665858,
+  "started_utc": "2026-07-13T00:08:12.970Z",
+  "ended_utc": "2026-07-13T00:13:02.488Z",
+  "received_utc": "2026-07-13T00:13:02.515462"
+}

@@ -1,0 +1,2 @@
+index,name,type,nominal_srate,channel_count,samples,duration_seconds,csv_file
+1,SpyGameMarkers,Markers,0.000000000000000,1,42,88.56828739616321,01_SpyGameMarkers.csv
