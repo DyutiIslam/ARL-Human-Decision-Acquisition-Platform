@@ -6,3 +6,4 @@ python-dotenv==1.0.1
 pylsl==1.16.2
 pyxdf==1.17.0
 pandas==2.2.3
+numpy==2.1.2

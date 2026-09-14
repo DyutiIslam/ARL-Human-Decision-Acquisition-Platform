@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+arl_env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+# Experiment data
+data/
+*.xdf
+*.csv
+*.json
+
+# Media
+*.webm
+*.mp4
+*.wav
+*.avi
+
+# Logs
+*.log
+
+# Temporary
+temp/
+tmp/

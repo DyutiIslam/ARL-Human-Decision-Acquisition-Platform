@@ -1,3 +1,7 @@
+# ARL V13.2 Remote Media Fix
+
+For multi-laptop operation, start the moderator with `Run_ARL_V13_2.bat` and open each remote participant only with the matching file in `Participant_Launchers/`. See `V13_2_REMOTE_MEDIA_FIX_README.md`.
+
 # ARL Acquisition Interface - v8 Phase 1 LSL Marker Build
 
 This build preserves the tested v7 acquisition workflow and adds Phase 1 LSL marker-stream testing tools.
