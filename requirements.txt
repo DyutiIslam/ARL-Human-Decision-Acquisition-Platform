@@ -1,9 +1,0 @@
-fastapi==0.115.2
-uvicorn[standard]==0.30.6
-sqlmodel==0.0.21
-pydantic==2.9.2
-python-dotenv==1.0.1
-pylsl==1.16.2
-pyxdf==1.17.0
-pandas==2.2.3
-numpy==2.1.2
