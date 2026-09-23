@@ -1,3 +1,0 @@
-The ARL_System folder contains the research acquisition software.
-Research assistants should not rename, move, delete, or edit files inside ARL_System.
-Use the numbered BAT files in the main folder for normal operation.
