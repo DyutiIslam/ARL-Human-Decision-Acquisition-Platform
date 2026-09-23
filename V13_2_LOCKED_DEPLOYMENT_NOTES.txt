@@ -1,0 +1,25 @@
+ARL V13.2 LOCKED DEPLOYMENT DESIGN
+
+1. MODERATOR/HOST COMPUTER
+   - Full ARL V13.2 Managed Runtime package only.
+   - 1_SETUP_THIS_COMPUTER.bat prepares the ARL Python runtime.
+   - 2_START_ARL.bat runs the ARL server.
+   - 3_CONVERT_RECORDED_XDF.bat runs post-session conversion.
+
+2. PARTICIPANT COMPUTERS P1-P5
+   - No ARL Python/runtime/server installation.
+   - Use only the lightweight assigned browser launcher.
+
+3. OBSERVER COMPUTER
+   - No ARL Python/runtime/server installation.
+   - Use Launch_ARL_Observer.bat.
+   - Observer is read-only.
+   - Observer shows participant station status plus LSL device streams discovered by the ARL host.
+   - Observer does not record streams and does not control devices.
+
+4. LABRECORDER
+   - Remains the master LSL/XDF recorder.
+   - Observer monitoring does not replace the LabRecorder pre-recording verification.
+
+5. DEVICE SOFTWARE
+   - Consensys Pro, EMOTIV PRO, LabRecorder, and vendor drivers remain separate and are not installed by the ARL setup BAT.

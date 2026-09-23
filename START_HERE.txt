@@ -1,0 +1,21 @@
+ARL V13.2 RA OPERATOR PACKAGE
+=============================
+
+NEW COMPUTER - FIRST TIME ONLY
+1. Extract this entire ZIP to a normal local folder.
+2. Make sure the computer has internet access.
+3. Double-click 1_SETUP_THIS_COMPUTER.bat.
+4. Wait until you see: ARL V13.2 SETUP COMPLETE.
+5. Do not install Python or Python packages manually.
+
+NORMAL ARL SESSION
+Double-click 2_START_ARL.bat.
+Keep the ARL server window open for the entire session.
+
+AFTER RECORDING
+Double-click 3_CONVERT_RECORDED_XDF.bat to open the ARL XDF converter.
+
+IMPORTANT
+Do not edit files inside ARL_System or ARL_Runtime.
+Consensys Pro, EMOTIV PRO, LabRecorder, and hardware/vendor drivers are separate from this ARL setup.
+If any setup step fails, stop and send a screenshot of the error to the ARL project lead.

@@ -1,0 +1,32 @@
+ARL V13.2 RELEASE NOTES
+
+Purpose
+- Clean testing build derived from V13.1.
+- No intended changes to experiment phase logic, response collection, LSL marker semantics, or participant media synchronization.
+
+Changes
+1. Short package/folder name: ARL_V13_2.
+2. Updated visible V13.1 labels to V13.2.
+3. Removed stale V11 moderator-console wording.
+4. Updated moderator setup guidance for the current multimodal participant-station workflow.
+5. Replaced the fragile nested CMD browser-launch command with a delayed PowerShell Start-Process call to avoid malformed Windows path/quote handling.
+
+Preserved acquisition behavior
+- SpyGameMarkers LSL stream.
+- Participant browser camera+audio WebM recording.
+- Separate participant audio-only WebM recording.
+- Pxx_MEDIA_SYNC anchors every 5 seconds while recording.
+- Participant media_sync.csv sidecars.
+- XDF-to-CSV converter and media-event alignment logic.
+
+Recommended extraction location
+- Use a short local path such as C:\ARL\ARL_V13_2 rather than a deeply nested OneDrive/Desktop path.
+
+Installer reliability update (2026-09-23): setup now explicitly waits for the CPython GUI installer to finish before verifying python.exe, and writes ARL_Runtime\python_install.log plus the installer exit code if installation fails.
+
+V13.2 corrected runtime setup:
+- Detects and reuses an existing compatible Python 3.11 installation.
+- Does not reinstall Python when Python 3.11 is already present.
+- Creates an isolated ARL virtual environment under ARL_System\.venv.
+- Installs Python 3.11.9 only when no compatible Python 3.11 is available.
+- Records the base Python executable used in ARL_Runtime\PYTHON_USED.txt.
